@@ -1,0 +1,22 @@
+{%- comment -%}
+  BH home product card. Params: p (product), picks (array of "handle=Colour"), tag (optional prefix, e.g. "2 · In the photo").
+  Shows the picked colour's image and link when one is set; line label from custom.bh_collection; lead time from custom.lead_time.
+{%- endcomment -%}
+{%- assign v = p.selected_or_first_available_variant -%}
+{%- for pk in picks -%}
+  {%- assign pair = pk | strip | split: '=' -%}
+  {%- if pair[0] == p.handle and pair[1] != blank -%}
+    {%- for pv in p.variants -%}{%- if pv.title == pair[1] -%}{%- assign v = pv -%}{%- endif -%}{%- endfor -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign img = v.featured_image | default: p.featured_image -%}
+{%- assign url = p.url -%}{%- if p.variants.size > 1 -%}{%- assign url = v.url -%}{%- endif -%}
+{%- assign line = p.metafields.custom.bh_collection.value | default: '' -%}
+{%- if line == 'Bramley House Collection' -%}{%- assign line = 'The House Collection' -%}{%- endif -%}
+{%- assign lt = p.metafields.custom.lead_time.value | default: '' -%}
+<a class="bhh-card" href="{{ url }}">
+  <span class="bhh-card__img">{%- if img -%}{{ img | image_url: width: 700 | image_tag: loading: 'lazy', widths: '360,520,700', sizes: '(min-width: 990px) 24vw, 46vw', alt: p.title }}{%- endif -%}</span>
+  <span class="bhh-card__line">{% if tag != blank %}{{ tag }} · {% endif %}{{ line }}</span>
+  <span class="bhh-card__name">{{ p.title | remove: 'BH | Studio ' | remove: 'BH | Premier ' | remove: 'BH | Outdoor ' | split: ' — ' | first }}</span>
+  <span class="bhh-card__meta"><b>{{ v.price | money_without_trailing_zeros }}</b>{%- if lt != blank -%}<span class="bhh-pill{% if lt contains 'Now' %} bhh-pill--now{% endif %}">{{ lt | capitalize }}</span>{%- endif -%}</span>
+</a>

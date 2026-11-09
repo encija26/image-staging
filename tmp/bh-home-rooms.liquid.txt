@@ -1,0 +1,131 @@
+{%- comment -%}
+  BH Home: Pieces to Build Around (Nov 9 2026). Each block is one room:
+  photo (the chosen collection's banner, or an image picked here), the anchor piece, pieces in the photo, and pieces to add.
+  Dots: one "left,top" pair in percent per piece in the photo, anchor first, separated by |
+{%- endcomment -%}
+{%- assign st = section.settings -%}
+{%- assign picks = st.colour_picks | newline_to_br | split: '<br />' -%}
+<style>
+  .bhr{background:#F8F4EC;color:#2B2B2B;border-top:1px solid #E2DACB}
+  .bhr__wrap{max-width:var(--page-width,1440px);margin:0 auto;padding:56px 20px 64px}
+  @media (min-width:750px){.bhr__wrap{padding:80px 5rem 88px}}
+  .bhr__head{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;margin-bottom:22px}
+  .bhr__eb{margin:0;display:flex;align-items:center;justify-content:center;gap:14px;font-size:14px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#856237}
+  .bhr__eb::before,.bhr__eb::after{content:'';width:32px;height:1px;background:currentColor;flex:none}
+  @media (min-width:750px){.bhr__eb{font-size:16px;letter-spacing:.26em;gap:16px}.bhr__eb::before,.bhr__eb::after{width:40px}}
+  .bhr__h{margin:0;font-family:var(--font-heading-family);font-weight:300;font-size:clamp(32px,3.4vw,44px);line-height:1.12;text-wrap:balance}
+  .bhr__sub{margin:0;font-size:17px;color:#5C574F}
+  .bhr__tabs{display:flex;gap:4px 26px;margin:0 0 24px;padding:0 2px;border-bottom:1px solid #E2DACB;overflow-x:auto;scrollbar-width:none}
+  .bhr__tabs::-webkit-scrollbar{display:none}
+  @media (min-width:750px){.bhr__tabs{justify-content:center}}
+  .bhr__tab{flex:none;font:inherit;cursor:pointer;background:none;border:0;padding:12px 2px;margin-bottom:-1px;font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#6E675D;border-bottom:2px solid transparent;white-space:nowrap}
+  .bhr__tab[aria-selected="true"]{color:#2B2B2B;border-bottom-color:#856237}
+  .bhr__tab:focus-visible,.bhr__dot:focus-visible{outline:2px solid #856237;outline-offset:2px}
+  .bhr__panel[hidden]{display:none!important}
+  .bhr__photo{position:relative;aspect-ratio:16/9;overflow:hidden;background:#33342F}
+  .bhr__photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .bhr__dot{position:absolute;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:rgba(248,244,236,.94);border:1px solid #856237;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#856237;text-decoration:none;box-shadow:0 1px 6px rgba(0,0,0,.18)}
+  @media (min-width:750px){.bhr__dot{width:32px;height:32px;font-size:13px}}
+  .bhr__dot span{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);white-space:nowrap;background:#F8F4EC;color:#2B2B2B;padding:5px 9px;font-size:12px;font-weight:500;letter-spacing:0;opacity:0;pointer-events:none;transition:opacity .2s}
+  @media (hover:hover){.bhr__dot:hover span{opacity:1}}
+  .bhr__cap{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;padding:14px 0 12px;border-bottom:1px solid #E2DACB;text-decoration:none;color:inherit}
+  .bhr__cap-k{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#856237}
+  .bhr__cap-n{font-family:var(--font-heading-family);font-size:21px}
+  .bhr__cap-p{font-size:15px;color:#5C574F;font-variant-numeric:tabular-nums}
+  .bhr__label{margin:22px 0 14px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#6E675D}
+  .bhh__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 14px}
+  @media (min-width:990px){.bhh__grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:32px 22px}}
+  .bhh-card{display:flex;flex-direction:column;gap:6px;min-width:0;text-decoration:none;color:inherit}
+  .bhh-card__img{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .bhh-card__img img{width:100%;height:100%;object-fit:contain;transition:transform .5s ease}
+  @media (hover:hover){.bhh-card:hover .bhh-card__img img{transform:scale(1.03)}}
+  .bhh-card__line{display:block;margin:6px 0 0;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#856237}
+  .bhh-card__name{display:block;margin:0;font-family:var(--font-heading-family);font-size:18px;line-height:1.3}
+  .bhh-card__meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:15px;color:#5C574F;font-variant-numeric:tabular-nums}
+  .bhh-card__meta b{color:#2B2B2B;font-weight:500}
+  .bhh-pill{font-size:11px;font-weight:600;letter-spacing:.08em;padding:2px 7px;border:1px solid #E2DACB;color:#6E675D;white-space:nowrap}
+  .bhh-pill--now{border-color:#B7C2A6;color:#55663F}
+</style>
+<div class="bhr" id="bhr-{{ section.id }}">
+  <div class="bhr__wrap">
+    <div class="bhr__head">
+      {%- if st.eyebrow != blank -%}<p class="bhr__eb">{{ st.eyebrow }}</p>{%- endif -%}
+      <h2 class="bhr__h">{{ st.heading }}</h2>
+      {%- if st.subheading != blank -%}<p class="bhr__sub">{{ st.subheading }}</p>{%- endif -%}
+    </div>
+    {%- if section.blocks.size > 1 -%}
+    <div class="bhr__tabs" role="tablist" aria-label="Rooms">
+      {%- for block in section.blocks -%}
+        <button class="bhr__tab" type="button" role="tab" id="bhr-t-{{ block.id }}" aria-controls="bhr-p-{{ block.id }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.label }}</button>
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+    {%- for block in section.blocks -%}
+      {%- assign b = block.settings -%}
+      {%- assign photo = b.image | default: b.collection.image -%}
+      {%- assign a = b.anchor -%}
+      {%- assign dots = b.dots | split: '|' -%}
+      <div class="bhr__panel" role="tabpanel" id="bhr-p-{{ block.id }}" aria-labelledby="bhr-t-{{ block.id }}"{% unless forloop.first %} hidden{% endunless %}>
+        <div class="bhr__photo">
+          {%- if photo -%}{{ photo | image_url: width: 2000 | image_tag: loading: 'lazy', widths: '750,1100,1500,2000', sizes: '(min-width: 1440px) 1300px, 92vw', alt: photo.alt }}{%- endif -%}
+          {%- assign n = 0 -%}
+          {%- if a != blank and dots[0] != blank -%}
+            {%- assign xy = dots[0] | split: ',' -%}{%- assign n = 1 -%}
+            <a class="bhr__dot" href="{{ a.url }}" style="left:{{ xy[0] | strip }}%;top:{{ xy[1] | strip }}%">1<span>{{ a.title | remove: 'BH | Studio ' | remove: 'BH | Premier ' | split: ' — ' | first }}</span></a>
+          {%- endif -%}
+          {%- for p in b.in_photo -%}
+            {%- assign di = forloop.index -%}{%- assign xy = dots[di] | split: ',' -%}
+            {%- if dots[di] != blank -%}
+            <a class="bhr__dot" href="{{ p.url }}" style="left:{{ xy[0] | strip }}%;top:{{ xy[1] | strip }}%">{{ forloop.index | plus: 1 }}<span>{{ p.title | remove: 'BH | Studio ' | remove: 'BH | Premier ' | split: ' — ' | first }}</span></a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- if a != blank -%}
+          {%- assign aline = a.metafields.custom.bh_collection.value | default: '' -%}{%- if aline == 'Bramley House Collection' -%}{%- assign aline = 'The House Collection' -%}{%- endif -%}
+          <a class="bhr__cap" href="{{ a.url }}"><span class="bhr__cap-k">1 · The anchor · {{ aline }}</span><span class="bhr__cap-n">{{ a.title | remove: 'BH | Studio ' | remove: 'BH | Premier ' | split: ' — ' | first }}</span><span class="bhr__cap-p">{{ a.price | money_without_trailing_zeros }}{% if a.metafields.custom.lead_time.value != blank %} · {{ a.metafields.custom.lead_time.value | capitalize }}{% endif %}</span></a>
+        {%- endif -%}
+        <p class="bhr__label">{{ st.finish_label }}</p>
+        <div class="bhh__grid">
+          {%- assign k = 1 -%}
+          {%- for p in b.in_photo -%}{%- assign k = k | plus: 1 -%}{%- capture tag -%}{{ k }} · In the photo{%- endcapture -%}{%- render 'bh-home-card', p: p, picks: picks, tag: tag -%}{%- endfor -%}
+          {%- for p in b.add -%}{%- assign k = k | plus: 1 -%}{%- capture tag -%}{{ k }} · Add{%- endcapture -%}{%- render 'bh-home-card', p: p, picks: picks, tag: tag -%}{%- endfor -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+<script>
+(function(){
+  var root=document.getElementById('bhr-{{ section.id }}'); if(!root) return;
+  var tabs=[].slice.call(root.querySelectorAll('.bhr__tab'));
+  function show(t){tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);var p=document.getElementById(x.getAttribute('aria-controls'));if(p)p.hidden=!on;});}
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){show(t);});
+    t.addEventListener('keydown',function(e){var k=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!k)return;var n=tabs[(i+k+tabs.length)%tabs.length];n.focus();show(n);});
+  });
+})();
+</script>
+{% schema %}
+{
+  "name": "BH Home: Build Around",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Start here. Build the room around it." },
+    { "type": "text", "id": "subheading", "label": "Subheading" },
+    { "type": "text", "id": "finish_label", "label": "Label above the pieces", "default": "Finish the room" },
+    { "type": "textarea", "id": "colour_picks", "label": "Colour picks", "info": "One per line: product-handle=Colour" }
+  ],
+  "blocks": [
+    { "type": "room", "name": "Room", "settings": [
+      { "type": "text", "id": "label", "label": "Tab label" },
+      { "type": "collection", "id": "collection", "label": "Use this collection's banner photo" },
+      { "type": "image_picker", "id": "image", "label": "Or pick a photo" },
+      { "type": "product", "id": "anchor", "label": "Anchor piece (1)" },
+      { "type": "product_list", "id": "in_photo", "label": "Other pieces in the photo", "limit": 4 },
+      { "type": "product_list", "id": "add", "label": "Pieces to add", "limit": 4 },
+      { "type": "text", "id": "dots", "label": "Dot positions", "info": "left,top in percent for the anchor, then each piece in the photo, separated by | (e.g. 79,58|25,54)" }
+    ] }
+  ],
+  "presets": [{ "name": "BH Home: Build Around" }]
+}
+{% endschema %}
