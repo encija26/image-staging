@@ -65,3 +65,10 @@
 .bhfav-item__add[disabled]{opacity:.55;cursor:default}
 .bhfav-empty{text-align:center;color:#5C574F;padding:30px 0}
 .bhfav-empty a{color:#856237}
+
+/* theme overrides: keep the heart a clean outline, no box behind it */
+.bhfav-heart svg,.bhfav-pdp svg,.bhfav-hdr svg{background:none!important;box-shadow:none!important;border-radius:0!important;padding:0!important}
+.bhfav-heart svg path,.bhfav-pdp svg path,.bhfav-hdr svg path{fill:none!important;stroke:currentColor!important;stroke-width:1.6!important}
+.bhfav-heart[aria-pressed="true"] svg path,.bhfav-pdp[aria-pressed="true"] svg path{fill:currentColor!important}
+.bhfav-toast span{white-space:nowrap}
+@media (max-width:749px){.bhfav-toast{font-size:13px;gap:12px;padding:11px 14px;bottom:16px}.bhfav-toast a{font-size:11px}}
