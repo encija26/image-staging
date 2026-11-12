@@ -145,8 +145,12 @@
       var v = (em.value || '').trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { err.textContent = 'Please enter a valid email address.'; err.hidden = false; em.focus(); return; }
       var opt = f.querySelector('input[name=optin]').checked;
-      var items = read();
-      clientEvent(v, 'Saved Favourites List', { RestoreURL: shareURL(), Count: items.length, Handles: items.map(function (x) { return x.h; }), WantsOffers: opt, Preview: !CFG.live });
+      var items = read(), restore = shareURL();
+      Promise.all(items.slice(0, 12).map(function (x) {
+        return getProduct(x.h).then(function (p) { return { Title: p.title, URL: location.origin + '/products/' + p.handle, Image: img(p.featured_image, 600), Price: money(p.price) }; }).catch(function () { return null; });
+      })).then(function (list) {
+        clientEvent(v, 'Saved Favourites List', { RestoreURL: restore, Count: items.length, Items: list.filter(Boolean), Handles: items.map(function (x) { return x.h; }), WantsOffers: opt, Preview: !CFG.live });
+      });
       if (opt && CFG.listId) subscribe(v);
       try { if (window.klaviyo && klaviyo.identify) klaviyo.identify({ email: v }); } catch (x) {}
       f.innerHTML = '<p class="bhfav-eb">Your Favourites</p><h2>Your list is saved</h2><p>Look out for an email with the link to your Favourites.</p><button type="button" class="bhfav-go">Keep browsing</button>';
