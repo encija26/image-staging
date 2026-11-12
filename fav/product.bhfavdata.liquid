@@ -1,0 +1,1 @@
+{%- layout none -%}{"h":{{ product.handle | json }},"c":[{%- for c in product.collections -%}{{ c.handle | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}

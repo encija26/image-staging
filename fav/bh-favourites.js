@@ -31,6 +31,7 @@
     if (!h) return;
     if (has(h)) { write(read().filter(function (x) { return x.h !== h; })); sync(); renderPage(); return; }
     var a = read(); a.unshift({ h: h, t: Date.now() }); write(a); sync();
+    renderPage();
     toast();
     getProduct(h).then(function (p) {
       var v = (p.variants || [])[0] || {};
@@ -167,34 +168,105 @@
   }
 
   /* ---------- Favourites page ---------- */
-  var page;
+  var page, renderSeq = 0;
+  /* Rooms, in display order. A piece in several rooms goes where the shopper already has the most saves. */
+  var ROOMS = [['living-room', 'Living Room'], ['bedroom', 'Bedroom'], ['dining', 'Dining'], ['office', 'Office'], ['entry-hall', 'Entry & Hall'], ['bath', 'Bath'], ['outdoor', 'Outdoor']];
+  var OTHER = ['other', 'Décor & More'];
+  /* Ricky's room builds from the home page (Build a room around it). Update when those rooms change. */
+  var BUILDS = {
+    'living-room': [
+      ['bh-premier-orleans-leather-sofa-chestnut', 'arcachon-raffia-back-linen-accent-chair-espresso-oyster', 'taormina-marble-top-coffee-table-gold', 'tintern-tapered-drum-side-table', 'bh-premier-ludwigsburg-embossed-leather-box-claret'],
+      ['ojai-down-filled-5-piece-corner-sectional', 'bh-premier-ballater-linen-wing-chair-cream-almond-frame', 'trieste-coffee-table-gold-white-top', 'frascati-marble-table-lamp-white-oyster', 'bh-premier-dunmore-gilded-pineapple-mirror-gold']
+    ],
+    'bedroom': [['totnes-upholstered-queen-bed', 'kirkby-2-drawer-faux-marble-nightstand', 'baden-crystal-brass-table-lamp-gold', 'sagres-cane-back-chair-driftwood', 'bh-premier-sloane-square-leather-iron-bench-claret-jet-base']],
+    'dining': [['quedlinburg-parquet-top-dining-table', 'plockton-swivel-dining-chair', 'middleham-horse-pedestal-bowl-gold', 'vezelay-arched-display-cabinet', 'madeira-woven-dining-chair-cocoa']],
+    'office': [['bh-premier-quai-voltaire-shagreen-desk-charcoal-brass-frame', 'menton-swivel-chair', 'vezelay-arched-display-cabinet', 'baden-crystal-brass-table-lamp-gold', 'bh-premier-quai-voltaire-shagreen-box-on-stand-charcoal-jet-base']]
+  };
+  var roomCache = {};
+  function getRooms(h) {
+    if (!roomCache[h]) roomCache[h] = fetch('/products/' + encodeURIComponent(h) + '?view=bhfavdata', { credentials: 'same-origin' })
+      .then(function (r) { if (!r.ok) throw 0; return r.text(); })
+      .then(function (t) { var j = JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1)); return j.c || []; })
+      .catch(function () { return []; });
+    return roomCache[h];
+  }
+  function itemHTML(x, p) {
+    var v = (p.variants || []).filter(function (vv) { return vv.available; })[0] || (p.variants || [])[0] || {};
+    var dropped = x.p && p.price < x.p;
+    return '<div class="bhfav-item" data-h="' + esc(x.h) + '"><div class="card--product"><a class="bhfav-item__ph" href="/products/' + esc(x.h) + '" aria-hidden="true" tabindex="-1">' +
+      (p.featured_image ? '<img src="' + esc(img(p.featured_image, 700)) + '" alt="' + esc(p.title) + '" loading="lazy">' : '') + '</a>' +
+      '<button type="button" class="bhfav-heart" data-bhfav="' + esc(x.h) + '" data-name="' + esc(p.title) + '">' + HEART + '</button></div>' +
+      '<h3 class="card__title"><a href="/products/' + esc(x.h) + '">' + esc(p.title) + '</a></h3>' +
+      '<div class="bhfav-item__price">' + money(p.price) + (dropped ? '<span class="bhfav-item__was">' + money(x.p) + '</span>' : '') + '</div>' +
+      (dropped ? '<span class="bhfav-item__drop">Price lower since you saved it</span>' : '') +
+      (p.available && v.id ? '<button type="button" class="bhfav-item__add" data-vid="' + v.id + '">Add to cart</button>' : '<a class="bhfav-item__add" href="/products/' + esc(x.h) + '">View piece</a>') + '</div>';
+  }
+  function pairHTML(p) {
+    return '<div class="bhfav-pair"><a class="bhfav-pair__ph" href="/products/' + esc(p.handle) + '" tabindex="-1" aria-hidden="true">' +
+      (p.featured_image ? '<img src="' + esc(img(p.featured_image, 300)) + '" alt="" loading="lazy">' : '') + '</a>' +
+      '<div class="bhfav-pair__txt"><h4 class="card__title"><a href="/products/' + esc(p.handle) + '">' + esc(p.title) + '</a></h4><span class="bhfav-pair__price">' + money(p.price) + '</span></div>' +
+      '<button type="button" class="bhfav-heart bhfav-heart--inline" data-bhfav="' + esc(p.handle) + '" data-name="' + esc(p.title) + '">' + HEART + '</button></div>';
+  }
+  function fillPairs(sec, key, rows, saved) {
+    var mine = rows.map(function (r) { return r.x.h; }), pick = [], seen = {};
+    (BUILDS[key] || []).slice().sort(function (a, b) {
+      var ia = a.some(function (h) { return mine.indexOf(h) > -1; }), ib = b.some(function (h) { return mine.indexOf(h) > -1; });
+      return (ib ? 1 : 0) - (ia ? 1 : 0);
+    }).forEach(function (blk) { blk.forEach(function (h) { if (!saved[h] && !seen[h] && pick.length < 2) { seen[h] = 1; pick.push(h); } }); });
+    var got = Promise.all(pick.map(function (h) { return getProduct(h).catch(function () { return null; }); }));
+    got.then(function (ps) {
+      ps = ps.filter(function (p) { return p && p.available; });
+      if (ps.length >= 2) return ps;
+      return fetch('/recommendations/products.json?product_id=' + rows[0].p.id + '&limit=8&intent=related')
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          (j.products || []).forEach(function (p) { if (ps.length < 2 && p.available && !saved[p.handle] && !seen[p.handle]) { seen[p.handle] = 1; ps.push(p); } });
+          return ps;
+        }).catch(function () { return ps; });
+    }).then(function (ps) {
+      if (!ps.length || !sec.isConnected) return;
+      var box = sec.querySelector('.bhfav-finish'); box.querySelector('.bhfav-finish__row').innerHTML = ps.map(pairHTML).join(''); box.hidden = false; sync();
+    });
+  }
   function renderPage() {
     page = page || document.getElementById('bhfav-page'); if (!page) return;
     var grid = page.querySelector('.bhfav-grid'), empty = page.querySelector('.bhfav-empty'), sub = page.querySelector('[data-bhfav-sub]'), tools = page.querySelector('.bhfav-page__tools');
-    var items = read();
+    var items = read(), seq = ++renderSeq;
     sub.textContent = items.length ? items.length + (items.length === 1 ? ' piece saved' : ' pieces saved') : '';
     empty.hidden = items.length > 0; tools.hidden = items.length === 0;
-    grid.innerHTML = items.map(function (x) { return '<div class="bhfav-item" data-h="' + esc(x.h) + '"><div class="card--product"><a class="bhfav-item__ph" href="/products/' + esc(x.h) + '" aria-hidden="true" tabindex="-1"></a></div><h3 class="card__title"><a href="/products/' + esc(x.h) + '">&nbsp;</a></h3><div class="bhfav-item__price">&nbsp;</div></div>'; }).join('');
-    items.forEach(function (x) {
-      getProduct(x.h).then(function (p) {
-        var el = grid.querySelector('.bhfav-item[data-h="' + CSS.escape(x.h) + '"]'); if (!el) return;
-        var v = (p.variants || []).filter(function (vv) { return vv.available; })[0] || (p.variants || [])[0] || {};
-        el.querySelector('.bhfav-item__ph').innerHTML = p.featured_image ? '<img src="' + esc(img(p.featured_image, 700)) + '" alt="' + esc(p.title) + '" loading="lazy">' : '';
-        var ph = el.querySelector('.card--product'), hb = document.createElement('button');
-        hb.type = 'button'; hb.className = 'bhfav-heart'; hb.setAttribute('data-bhfav', x.h); hb.setAttribute('data-name', p.title); hb.innerHTML = HEART; ph.appendChild(hb);
-        var t = el.querySelector('.card__title a'); t.textContent = p.title; delete t.dataset.bhl;
-        var dropped = x.p && p.price < x.p;
-        el.querySelector('.bhfav-item__price').innerHTML = money(p.price) + (dropped ? '<span class="bhfav-item__was">' + money(x.p) + '</span>' : '');
-        if (dropped) el.insertAdjacentHTML('beforeend', '<span class="bhfav-item__drop">Price lower since you saved it</span>');
-        if (p.available && v.id) el.insertAdjacentHTML('beforeend', '<button type="button" class="bhfav-item__add" data-vid="' + v.id + '">Add to cart</button>');
-        else el.insertAdjacentHTML('beforeend', '<a class="bhfav-item__add" href="/products/' + esc(x.h) + '">View piece</a>');
-        sync();
-      }).catch(function () {
-        var el = grid.querySelector('.bhfav-item[data-h="' + CSS.escape(x.h) + '"]'); if (el) el.remove();
-        write(read().filter(function (y) { return y.h !== x.h; })); sync();
+    grid.classList.add('bhfav-rooms');
+    if (!items.length) { grid.innerHTML = ''; return; }
+    if (!grid.children.length) grid.innerHTML = '<p class="bhfav-loading">Gathering your pieces</p>';
+    Promise.all(items.map(function (x) {
+      return Promise.all([getProduct(x.h).catch(function () { return null; }), getRooms(x.h)]).then(function (r) { return { x: x, p: r[0], c: r[1] }; });
+    })).then(function (rows) {
+      if (seq !== renderSeq) return;
+      var gone = rows.filter(function (r) { return !r.p; }).map(function (r) { return r.x.h; });
+      if (gone.length) write(read().filter(function (y) { return gone.indexOf(y.h) < 0; }));
+      rows = rows.filter(function (r) { return r.p; });
+      var freq = {}, saved = {};
+      rows.forEach(function (r) {
+        saved[r.x.h] = 1;
+        r.cands = ROOMS.filter(function (rm) { return r.c.indexOf(rm[0]) > -1; }).map(function (rm) { return rm[0]; });
+        if (!r.cands.length) r.cands = [OTHER[0]];
+        r.cands.forEach(function (k) { freq[k] = (freq[k] || 0) + 1; });
       });
+      var order = ROOMS.map(function (r) { return r[0]; }).concat(OTHER[0]), label = {}, groups = {};
+      ROOMS.concat([OTHER]).forEach(function (r) { label[r[0]] = r[1]; });
+      rows.forEach(function (r) {
+        r.room = r.cands.slice().sort(function (a, b) { return (freq[b] - freq[a]) || (order.indexOf(a) - order.indexOf(b)); })[0];
+        (groups[r.room] = groups[r.room] || []).push(r);
+      });
+      sub.textContent = rows.length + (rows.length === 1 ? ' piece saved' : ' pieces saved');
+      grid.innerHTML = order.filter(function (k) { return groups[k]; }).map(function (k) {
+        var g = groups[k], tot = g.reduce(function (s, r) { return s + (r.p.price || 0); }, 0);
+        return '<section class="bhfav-room" data-room="' + k + '"><div class="bhfav-room__head"><h2 class="bhfav-room__name">' + esc(label[k]) + '</h2><span class="bhfav-room__meta">' + g.length + (g.length === 1 ? ' piece' : ' pieces') + ' &middot; ' + money(tot) + '</span></div>' +
+          '<div class="bhfav-grid">' + g.map(function (r) { return itemHTML(r.x, r.p); }).join('') + '</div>' +
+          '<div class="bhfav-finish" hidden><p class="bhfav-finish__eb">To finish the room</p><div class="bhfav-finish__row"></div></div></section>';
+      }).join('');
+      grid.querySelectorAll('.bhfav-room').forEach(function (sec) { var k = sec.getAttribute('data-room'); fillPairs(sec, k, groups[k], saved); });
+      sync();
     });
-    sync();
   }
   function pageEvents() {
     page = document.getElementById('bhfav-page'); if (!page) return;
