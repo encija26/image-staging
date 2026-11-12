@@ -1,0 +1,23 @@
+<div class="bhfav-page page-width" id="bhfav-page">
+  <div class="bhfav-page__head">
+    <p class="bhfav-eb">Your Favourites</p>
+    <h1 class="h2">{{ section.settings.heading | escape }}</h1>
+    <p data-bhfav-sub></p>
+    <div class="bhfav-page__tools" hidden>
+      <button type="button" data-bhfav-share>Share my list</button>
+      <button type="button" data-bhfav-email>Email me my list</button>
+    </div>
+  </div>
+  <div class="bhfav-grid"></div>
+  <p class="bhfav-empty" hidden>Nothing saved yet. Tap the heart on any piece to keep it here. <a href="/collections/all">Browse the collection</a></p>
+  <noscript><p class="bhfav-empty">Favourites needs JavaScript turned on.</p></noscript>
+</div>
+
+{% schema %}
+{
+  "name": "BH Favourites page",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Pieces you've saved" }
+  ]
+}
+{% endschema %}

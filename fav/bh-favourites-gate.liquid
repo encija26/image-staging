@@ -1,0 +1,7 @@
+{%- comment -%}
+  Bramley House Favourites (custom wishlist), Nov 12 2026.
+  Hidden test switch: visit any page with ?bhfav=1 to turn it on in that browser, ?bhfav=0 to turn it off.
+  Normal shoppers download nothing until bh_fav_live is set to true below.
+{%- endcomment -%}
+{%- assign bh_fav_live = false -%}
+<script>(function(){try{var q=location.search;if(/[?&]bhfav=1(&|$)/.test(q))localStorage.setItem('bhFavPreview','1');if(/[?&]bhfav=0(&|$)/.test(q))localStorage.removeItem('bhFavPreview');var live={{ bh_fav_live | json }};if(!live&&localStorage.getItem('bhFavPreview')!=='1')return;window.BHFAV_CFG={live:live,page:live?'/pages/favourites':'/pages/contact?view=favourites',cur:{{ cart.currency.iso_code | default: 'USD' | json }}};document.documentElement.classList.add('bhfav-on');var l=document.createElement('link');l.rel='stylesheet';l.href={{ 'bh-favourites.css' | asset_url | json }};document.head.appendChild(l);var s=document.createElement('script');s.src={{ 'bh-favourites.js' | asset_url | json }};s.defer=true;document.head.appendChild(s)}catch(e){}})();</script>
