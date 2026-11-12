@@ -128,11 +128,10 @@
       '<p class="bhfav-eb">Your Favorites</p><h2 id="bhfavT">Keep your list for later</h2>' +
       '<p>Add your email and we\'ll send you a link to your Favorites, so you can open your list on any device.</p>' +
       '<label class="bhfav-field">Email address<input type="email" name="email" autocomplete="email" required placeholder="you@example.com"></label>' +
-      '<label class="bhfav-check"><input type="checkbox" name="optin"><span>Also email me occasional offers and new arrivals from Bramley House.</span></label>' +
       '<p class="bhfav-err" hidden></p>' +
-      '<button type="submit" class="bhfav-go">Keep my list</button>' +
+      '<button type="submit" class="bhfav-go">Email me my list</button>' +
       '<button type="button" class="bhfav-no">No thanks, keep browsing</button>' +
-      '<p class="bhfav-fine">Unsubscribe any time. We never share your email.</p></form>';
+      '<p class="bhfav-fine">You\'ll also get occasional new arrivals and offers from Bramley House. Unsubscribe any time. We never share your email.</p></form>';
     document.body.appendChild(w);
     var f = w.querySelector('form'), em = f.querySelector('input[type=email]'), err = f.querySelector('.bhfav-err');
     function close() { w.remove(); document.removeEventListener('keydown', onKey); }
@@ -144,14 +143,14 @@
       e.preventDefault();
       var v = (em.value || '').trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { err.textContent = 'Please enter a valid email address.'; err.hidden = false; em.focus(); return; }
-      var opt = f.querySelector('input[name=optin]').checked;
+      var opt = true;
       var items = read(), restore = shareURL();
       Promise.all(items.slice(0, 12).map(function (x) {
         return getProduct(x.h).then(function (p) { return { Title: p.title, URL: location.origin + '/products/' + p.handle, Image: img(p.featured_image, 600), Price: money(p.price) }; }).catch(function () { return null; });
       })).then(function (list) {
-        clientEvent(v, 'Saved Favourites List', { RestoreURL: restore, Count: items.length, Items: list.filter(Boolean), Handles: items.map(function (x) { return x.h; }), WantsOffers: opt, Preview: !CFG.live });
+        var send = function () { clientEvent(v, 'Saved Favourites List', { RestoreURL: restore, Count: items.length, Items: list.filter(Boolean), Handles: items.map(function (x) { return x.h; }), Preview: !CFG.live }); };
+        subscribe(v).then(function () { setTimeout(send, 1500); }, send);
       });
-      if (opt && CFG.listId) subscribe(v);
       try { if (window.klaviyo && klaviyo.identify) klaviyo.identify({ email: v }); } catch (x) {}
       f.innerHTML = '<p class="bhfav-eb">Your Favorites</p><h2>Your list is saved</h2><p>Look out for an email with the link to your Favorites.</p><button type="button" class="bhfav-go">Keep browsing</button>';
       f.querySelector('.bhfav-go').addEventListener('click', close);
@@ -168,11 +167,11 @@
   }
   function subscribe(email) {
     try {
-      fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(CFG.klaviyo || 'SJkVfD'), {
+      return fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(CFG.klaviyo || 'SJkVfD'), {
         method: 'POST', headers: { 'Content-Type': 'application/json', revision: '2024-10-15' },
-        body: JSON.stringify({ data: { type: 'subscription', attributes: { custom_source: 'Favorites', profile: { data: { type: 'profile', attributes: { email: email } } } }, relationships: { list: { data: { type: 'list', id: CFG.listId } } } } })
+        body: JSON.stringify({ data: { type: 'subscription', attributes: { custom_source: 'Favorites', profile: { data: { type: 'profile', attributes: { email: email, subscriptions: { email: { marketing: { consent: 'SUBSCRIBED' } } } } } } }, relationships: { list: { data: { type: 'list', id: CFG.listId || 'RV7Bu8' } } } } })
       });
-    } catch (e) {}
+    } catch (e) { return Promise.reject(e); }
   }
 
   /* ---------- Favorites page ---------- */
