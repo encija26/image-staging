@@ -1,6 +1,6 @@
 <div class="bhfav-page page-width" id="bhfav-page">
   <div class="bhfav-page__head">
-    <p class="bhfav-eb">Your Favourites</p>
+    <p class="bhfav-eb">Your Favorites</p>
     <h1 class="h2">{{ section.settings.heading | escape }}</h1>
     <p data-bhfav-sub></p>
     <div class="bhfav-page__tools" hidden>
@@ -10,12 +10,12 @@
   </div>
   <div class="bhfav-grid"></div>
   <p class="bhfav-empty" hidden>Nothing saved yet. Tap the heart on any piece to keep it here. <a href="/collections/all">Browse the collection</a></p>
-  <noscript><p class="bhfav-empty">Favourites needs JavaScript turned on.</p></noscript>
+  <noscript><p class="bhfav-empty">Favorites needs JavaScript turned on.</p></noscript>
 </div>
 
 {% schema %}
 {
-  "name": "BH Favourites page",
+  "name": "BH Favorites page",
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Pieces you've saved" }
   ]

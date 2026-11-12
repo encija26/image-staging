@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "main": { "type": "bh-favourites-page", "settings": { "heading": "Pieces you've saved" } }
+  },
+  "order": ["main"]
+}

@@ -1,6 +1,6 @@
-/* Bramley House Favourites (custom wishlist). Nov 12 2026.
+/* Bramley House Favorites (custom wishlist). Nov 12 2026.
    Saves live in this browser (localStorage "bhFav"). Known Klaviyo profiles also get an
-   "Added to Favourites" event. GA4 gets add_to_wishlist, Meta gets AddToWishlist. */
+   "Added to Favorites" event. GA4 gets add_to_wishlist, Meta gets AddToWishlist. */
 (function () {
   'use strict';
   if (window.__bhFavLoaded) return; window.__bhFavLoaded = true;
@@ -44,7 +44,7 @@
   /* ---------- reporting (no emails are sent from here) ---------- */
   function report(p, v) {
     var val = (p.price || 0) / 100, url = location.origin + '/products/' + p.handle;
-    try { if (window.klaviyo && klaviyo.track) klaviyo.track('Added to Favourites', { ProductName: p.title, ProductID: String(p.id), Handle: p.handle, URL: url, ImageURL: img(p.featured_image, 800), Price: val, ProductType: p.type || '', Tags: p.tags || [], Preview: !CFG.live }); } catch (e) {}
+    try { if (window.klaviyo && klaviyo.track) klaviyo.track('Added to Favorites', { ProductName: p.title, ProductID: String(p.id), Handle: p.handle, URL: url, ImageURL: img(p.featured_image, 800), Price: val, ProductType: p.type || '', Tags: p.tags || [], Preview: !CFG.live }); } catch (e) {}
     try { if (window.gtag) gtag('event', 'add_to_wishlist', { currency: CFG.cur, value: val, items: [{ item_id: String(p.id), item_name: p.title, item_category: p.type || '', price: val }] }); } catch (e) {}
     try { if (window.fbq) fbq('track', 'AddToWishlist', { content_ids: ['shopify_US_' + p.id + '_' + v.id], content_type: 'product_group', content_name: p.title, value: val, currency: CFG.cur }); } catch (e) {}
     try { if (window.clarity) { clarity('event', 'favourite_added'); clarity('set', 'favourited', p.handle); } } catch (e) {}
@@ -96,20 +96,20 @@
     document.querySelectorAll('[data-bhfav]').forEach(function (b) {
       var on = !!set[b.getAttribute('data-bhfav')], n = b.getAttribute('data-name') || 'this piece';
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
-      b.setAttribute('aria-label', (on ? 'Remove ' : 'Save ') + n + (on ? ' from' : ' to') + ' Favourites');
-      if (b.classList.contains('bhfav-pdp')) b.querySelector('span').textContent = on ? 'Saved to Favourites' : 'Save to Favourites';
+      b.setAttribute('aria-label', (on ? 'Remove ' : 'Save ') + n + (on ? ' from' : ' to') + ' Favorites');
+      if (b.classList.contains('bhfav-pdp')) b.querySelector('span').textContent = on ? 'Saved to Favorites' : 'Save to Favorites';
     });
     var n = count();
     document.querySelectorAll('.bhfav-hdr').forEach(function (a) {
       var c = a.querySelector('.bhfav-count'); c.textContent = n; c.hidden = n === 0;
-      a.setAttribute('aria-label', 'Favourites' + (n ? ', ' + n + (n === 1 ? ' piece' : ' pieces') + ' saved' : ''));
+      a.setAttribute('aria-label', 'Favorites' + (n ? ', ' + n + (n === 1 ? ' piece' : ' pieces') + ' saved' : ''));
     });
   }
 
   /* ---------- toast ---------- */
   var tEl, tTimer;
   function toast() {
-    if (!tEl) { tEl = document.createElement('div'); tEl.className = 'bhfav-toast'; tEl.setAttribute('role', 'status'); tEl.innerHTML = '<span>Saved to your Favourites</span><a href="' + esc(CFG.page) + '">View list</a>'; document.body.appendChild(tEl); }
+    if (!tEl) { tEl = document.createElement('div'); tEl.className = 'bhfav-toast'; tEl.setAttribute('role', 'status'); tEl.innerHTML = '<span>Saved to your Favorites</span><a href="' + esc(CFG.page) + '">View list</a>'; document.body.appendChild(tEl); }
     tEl.classList.add('is-on'); clearTimeout(tTimer); tTimer = setTimeout(function () { tEl.classList.remove('is-on'); }, 2600);
   }
 
@@ -125,8 +125,8 @@
     var w = document.createElement('div'); w.className = 'bhfav-sheet-wrap';
     w.innerHTML = '<form class="bhfav-sheet" role="dialog" aria-modal="true" aria-labelledby="bhfavT" novalidate>' +
       '<button type="button" class="bhfav-x" aria-label="Close">&times;</button>' +
-      '<p class="bhfav-eb">Your Favourites</p><h2 id="bhfavT">Keep your list for later</h2>' +
-      '<p>Add your email and we\'ll send you a link to your Favourites, so you can open your list on any device.</p>' +
+      '<p class="bhfav-eb">Your Favorites</p><h2 id="bhfavT">Keep your list for later</h2>' +
+      '<p>Add your email and we\'ll send you a link to your Favorites, so you can open your list on any device.</p>' +
       '<label class="bhfav-field">Email address<input type="email" name="email" autocomplete="email" required placeholder="you@example.com"></label>' +
       '<label class="bhfav-check"><input type="checkbox" name="optin"><span>Also email me occasional offers and new arrivals from Bramley House.</span></label>' +
       '<p class="bhfav-err" hidden></p>' +
@@ -153,7 +153,7 @@
       });
       if (opt && CFG.listId) subscribe(v);
       try { if (window.klaviyo && klaviyo.identify) klaviyo.identify({ email: v }); } catch (x) {}
-      f.innerHTML = '<p class="bhfav-eb">Your Favourites</p><h2>Your list is saved</h2><p>Look out for an email with the link to your Favourites.</p><button type="button" class="bhfav-go">Keep browsing</button>';
+      f.innerHTML = '<p class="bhfav-eb">Your Favorites</p><h2>Your list is saved</h2><p>Look out for an email with the link to your Favorites.</p><button type="button" class="bhfav-go">Keep browsing</button>';
       f.querySelector('.bhfav-go').addEventListener('click', close);
     });
   }
@@ -170,12 +170,12 @@
     try {
       fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(CFG.klaviyo || 'SJkVfD'), {
         method: 'POST', headers: { 'Content-Type': 'application/json', revision: '2024-10-15' },
-        body: JSON.stringify({ data: { type: 'subscription', attributes: { custom_source: 'Favourites', profile: { data: { type: 'profile', attributes: { email: email } } } }, relationships: { list: { data: { type: 'list', id: CFG.listId } } } } })
+        body: JSON.stringify({ data: { type: 'subscription', attributes: { custom_source: 'Favorites', profile: { data: { type: 'profile', attributes: { email: email } } } }, relationships: { list: { data: { type: 'list', id: CFG.listId } } } } })
       });
     } catch (e) {}
   }
 
-  /* ---------- Favourites page ---------- */
+  /* ---------- Favorites page ---------- */
   var page, renderSeq = 0;
   /* Rooms, in display order. A piece in several rooms goes where the shopper already has the most saves. */
   var ROOMS = [['living-room', 'Living Room'], ['bedroom', 'Bedroom'], ['dining', 'Dining'], ['office', 'Office'], ['entry-hall', 'Entry & Hall'], ['bath', 'Bath'], ['outdoor', 'Outdoor']];
@@ -300,7 +300,7 @@
       }
       if (e.target.closest('[data-bhfav-share]')) {
         var u = shareURL(), btn = e.target.closest('[data-bhfav-share]');
-        if (navigator.share) { navigator.share({ title: 'My Bramley House Favourites', url: u }).catch(function () {}); }
+        if (navigator.share) { navigator.share({ title: 'My Bramley House Favorites', url: u }).catch(function () {}); }
         else if (navigator.clipboard) { navigator.clipboard.writeText(u).then(function () { btn.textContent = 'Link copied'; setTimeout(function () { btn.textContent = 'Share my list'; }, 2200); }); }
         return;
       }
