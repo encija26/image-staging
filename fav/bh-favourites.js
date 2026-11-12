@@ -145,18 +145,22 @@
       var v = (em.value || '').trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { err.textContent = 'Please enter a valid email address.'; err.hidden = false; em.focus(); return; }
       var opt = f.querySelector('input[name=optin]').checked;
-      try {
-        if (window.klaviyo) {
-          klaviyo.identify({ email: v }).then(function () {
-            var items = read();
-            klaviyo.track('Saved Favourites List', { RestoreURL: shareURL(), Count: items.length, Handles: items.map(function (x) { return x.h; }), WantsOffers: opt, Preview: !CFG.live });
-            if (opt && CFG.listId) subscribe(v);
-          });
-        }
-      } catch (x) {}
+      var items = read();
+      clientEvent(v, 'Saved Favourites List', { RestoreURL: shareURL(), Count: items.length, Handles: items.map(function (x) { return x.h; }), WantsOffers: opt, Preview: !CFG.live });
+      if (opt && CFG.listId) subscribe(v);
+      try { if (window.klaviyo && klaviyo.identify) klaviyo.identify({ email: v }); } catch (x) {}
       f.innerHTML = '<p class="bhfav-eb">Your Favourites</p><h2>Your list is saved</h2><p>Look out for an email with the link to your Favourites.</p><button type="button" class="bhfav-go">Keep browsing</button>';
       f.querySelector('.bhfav-go').addEventListener('click', close);
     });
+  }
+  /* Direct to Klaviyo's public client API, so it works even if klaviyo.js is slow or blocked. */
+  function clientEvent(email, name, props) {
+    try {
+      fetch('https://a.klaviyo.com/client/events/?company_id=' + encodeURIComponent(CFG.klaviyo || 'SJkVfD'), {
+        method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', revision: '2024-10-15' },
+        body: JSON.stringify({ data: { type: 'event', attributes: { properties: props, metric: { data: { type: 'metric', attributes: { name: name } } }, profile: { data: { type: 'profile', attributes: { email: email } } } } } })
+      });
+    } catch (e) {}
   }
   function subscribe(email) {
     try {
