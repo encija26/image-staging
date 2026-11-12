@@ -169,7 +169,7 @@
     try {
       return fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(CFG.klaviyo || 'SJkVfD'), {
         method: 'POST', headers: { 'Content-Type': 'application/json', revision: '2024-10-15' },
-        body: JSON.stringify({ data: { type: 'subscription', attributes: { custom_source: 'Favorites', profile: { data: { type: 'profile', attributes: { email: email, subscriptions: { email: { marketing: { consent: 'SUBSCRIBED' } } } } } } }, relationships: { list: { data: { type: 'list', id: CFG.listId || 'RV7Bu8' } } } } })
+        body: JSON.stringify({ data: { type: 'subscription', attributes: { custom_source: 'Favorites', profile: { data: { type: 'profile', attributes: { email: email } } } }, relationships: { list: { data: { type: 'list', id: CFG.listId || 'RV7Bu8' } } } } })
       });
     } catch (e) { return Promise.reject(e); }
   }
