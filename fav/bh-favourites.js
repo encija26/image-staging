@@ -220,7 +220,8 @@
       return fetch('/recommendations/products.json?product_id=' + rows[0].p.id + '&limit=8&intent=related')
         .then(function (r) { return r.json(); })
         .then(function (j) {
-          (j.products || []).forEach(function (p) { if (ps.length < 2 && p.available && !saved[p.handle] && !seen[p.handle]) { seen[p.handle] = 1; ps.push(p); } });
+          var types = rows.map(function (r) { return r.p.type; }).concat(ps.map(function (p) { return p.type; }));
+          (j.products || []).forEach(function (p) { if (ps.length < 2 && p.available && !saved[p.handle] && !seen[p.handle] && types.indexOf(p.type) < 0) { types.push(p.type); seen[p.handle] = 1; ps.push(p); } });
           return ps;
         }).catch(function () { return ps; });
     }).then(function (ps) {
@@ -248,6 +249,7 @@
       rows.forEach(function (r) {
         saved[r.x.h] = 1;
         r.cands = ROOMS.filter(function (rm) { return r.c.indexOf(rm[0]) > -1; }).map(function (rm) { return rm[0]; });
+        if (!r.cands.length) r.cands = Object.keys(BUILDS).filter(function (k) { return BUILDS[k].some(function (blk) { return blk.indexOf(r.x.h) > -1; }); });
         if (!r.cands.length) r.cands = [OTHER[0]];
         r.cands.forEach(function (k) { freq[k] = (freq[k] || 0) + 1; });
       });
