@@ -1,0 +1,49 @@
+{%- comment -%}
+  Trade Program page: layering test (Nov 19 2026). Adds linen bands, a room photo and ringed step numbers.
+  Only used by templates/page.trade-layers.json (?view=trade-layers). Page copy and the form are untouched.
+{%- endcomment -%}
+<style>
+  .bh-trade{--bht-linen:#EFE9DE;--bht-canvas:#F8F4EC}
+  html,body{overflow-x:clip}
+  /* linen bands: Who it's for, How it works */
+  .bh-trade section:has(.who),
+  .bh-trade section:has(.steps){background:var(--bht-linen);box-shadow:0 0 0 100vmax var(--bht-linen);clip-path:inset(0 -100vmax);border-top-color:transparent;padding:56px 0}
+  .bh-trade section:has(.steps) + section{border-top-color:transparent}
+  .bh-trade .who{background:transparent;border:0;gap:14px}
+  .bh-trade .who div{background:var(--bht-canvas);border:1px solid var(--line)}
+  /* room photo */
+  .bht-photo{margin:0 calc(50% - 50vw);width:100vw;max-width:none}
+  .bht-photo img{display:block;width:100%;height:auto;max-height:600px;object-fit:cover;object-position:50% 55%}
+  .bht-photo + section{border-top-color:transparent}
+  /* ringed step numbers, in the style of the BH seal */
+  .bh-trade .steps{position:relative}
+  .bh-trade .steps .n{width:58px;height:58px;border-radius:50%;border:1px solid var(--brass-deep);background:var(--bht-canvas);display:grid;place-items:center;font-family:var(--font-heading-family,'Trirong'),Georgia,serif;font-weight:300;font-size:26px;line-height:1;color:var(--brass-deep);margin:0 0 16px;position:relative;z-index:1}
+  .bh-trade .steps::before{content:"";position:absolute;top:29px;left:29px;right:calc((100% - 56px) / 3 - 29px);height:1px;background:rgba(133,98,55,.45)}
+  @media (max-width:820px){
+    .bh-trade .steps::before{display:none}
+    .bh-trade .steps>div{display:grid;grid-template-columns:58px 1fr;column-gap:16px;align-items:center}
+    .bh-trade .steps .n{grid-row:span 2;align-self:start;margin:0}
+    .bh-trade .steps>div h3{align-self:end}
+    .bh-trade .steps>div p:not(.n){grid-column:2}
+    .bh-trade section:has(.who),.bh-trade section:has(.steps){padding:44px 0}
+    .bht-photo img{aspect-ratio:4/3}
+  }
+</style>
+<script>
+  (function () {
+    function add() {
+      var who = document.querySelector('.bh-trade .who');
+      if (!who || document.querySelector('.bht-photo')) return;
+      var sec = who.closest('section'); if (!sec) return;
+      var f = document.createElement('figure');
+      f.className = 'bht-photo';
+      f.innerHTML = '<img src="{{ 'bh-trade-marbella-2000.jpg' | asset_url }}" srcset="{{ 'bh-trade-marbella-1000.jpg' | asset_url }} 1000w, {{ 'bh-trade-marbella-2000.jpg' | asset_url }} 2000w" sizes="100vw" width="2000" height="1125" loading="lazy" alt="A Bramley House living room with the Marbella sofa, two blue barrel chairs and a round brass coffee table">';
+      sec.parentNode.insertBefore(f, sec.nextSibling);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
+  })();
+</script>
+
+{% schema %}
+{ "name": "BH Trade layers test", "settings": [] }
+{% endschema %}
