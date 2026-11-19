@@ -161,7 +161,7 @@
 .bht-faq{display:grid;grid-template-columns:1fr;background:#F8F4EC;border-top:1px solid #E2DACB}
 @media (min-width:990px){.bht-faq{grid-template-columns:5fr 7fr}}
 .bht-faq__img{position:relative;min-height:340px;background:#E2DACB}
-.bht-faq__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:74% 50%}
+.bht-faq__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:52% 50%}
 .bht-faq__body{padding:64px 20px 80px}
 @media (min-width:750px){.bht-faq__body{padding:96px 5rem 110px}}
 .bht-faq .bht__h{margin-top:20px}
@@ -285,7 +285,7 @@
   </div></div></section>
 
   <section class="bht-faq">
-    <div class="bht-faq__img"><img src="{{ 'bh-trade-desk-1600.jpg' | asset_url }}" srcset="{{ 'bh-trade-desk-800.jpg' | asset_url }} 800w, {{ 'bh-trade-desk-1600.jpg' | asset_url }} 1600w" sizes="(min-width: 990px) 42vw, 100vw" width="1600" height="1381" loading="lazy" alt="A Bramley House study with a turned-leg writing desk and a navy wingback armchair beside a bookcase"></div>
+    <div class="bht-faq__img">{%- assign dci = collections['desk-chairs'].image -%}<img src="{{ dci | image_url: width: 1600 }}" srcset="{{ dci | image_url: width: 800 }} 800w, {{ dci | image_url: width: 1200 }} 1200w, {{ dci | image_url: width: 1600 }} 1600w, {{ dci | image_url: width: 2400 }} 2400w" sizes="(min-width: 990px) 42vw, 100vw" width="2800" height="1575" loading="lazy" alt="{{ dci.alt | escape }}"></div>
     <div class="bht-faq__body">
       <p class="bht__eb">Questions</p>
       <h2 class="bht__h">Trade terms &amp; FAQs</h2>
