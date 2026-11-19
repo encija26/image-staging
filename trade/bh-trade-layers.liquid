@@ -1,41 +1,51 @@
 {%- comment -%}
-  Trade Program page: layering test (Nov 19 2026). Adds linen bands, a room photo and ringed step numbers.
+  Trade Program page: layering test (Nov 19 2026). Linen bands, room photo, ringed step numbers, About-page layout patterns.
   Only used by templates/page.trade-layers.json (?view=trade-layers). Page copy and the form are untouched.
 {%- endcomment -%}
 <style>
-  .bh-trade{--bht-linen:#EFE9DE;--bht-canvas:#F8F4EC}
+  /* Trade page test: follows the About page patterns (wide split with a brass rule, centered sections, ruled cells) */
+  .bh-trade{--bht-linen:#EFE9DE;--bht-canvas:#F8F4EC;--bht-rule:rgba(133,98,55,.35)}
   html,body{overflow-x:clip}
-  /* linen bands: Who it's for, How it works */
-  .bh-trade section:has(.who),
-  .bh-trade section:has(.steps){background:var(--bht-linen);box-shadow:0 0 0 100vmax var(--bht-linen);clip-path:inset(0 -100vmax);border-top-color:transparent;padding:56px 0}
-  .bh-trade section:has(.steps) + section{border-top-color:transparent}
-  /* stacked sections: heading on top, content uses the full width (no left label column) */
-  .bh-trade .split{grid-template-columns:1fr;gap:26px}
-  .bh-trade .split>h2,.bh-trade .split>div:first-child>h2{font-size:36px}
-  .bh-trade .why-lede{max-width:46ch}
-  .bh-trade .grid2{gap:30px 56px}
-  .bh-trade .formcard{max-width:none}
   /* top section: intro sits right under the title */
   .bh-trade .hero{align-items:start}
-  /* Who it's for: one scannable row, no boxes */
-  .bh-trade .who{grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;background:transparent;border:0}
-  .bh-trade .who div{background:transparent;border:0;border-top:1px solid var(--brass-deep);padding:18px 0 0}
+  /* split sections (Why, Members): wider heading column, short brass rule under the heading, like About "The idea" */
+  .bh-trade .split{grid-template-columns:minmax(0,2fr) minmax(0,3fr);gap:56px}
+  .bh-trade section:has(.grid2) .split>h2::after,
+  .bh-trade section:has(.grid2) .split>div:first-child>h2::after{content:"";display:block;width:44px;height:1px;background:var(--brass);margin-top:22px}
+  .bh-trade .grid2{gap:28px 40px}
+  /* centered sections (Who, How, Apply, FAQ), like About "How we choose" */
+  .bh-trade section:has(.who) .split,
+  .bh-trade section:has(.steps) .split,
+  .bh-trade section:has(form) .split,
+  .bh-trade section:has(details) .split{grid-template-columns:1fr;gap:30px;text-align:center;justify-items:center}
+  .bh-trade section:has(form) .split>*,.bh-trade section:has(details) .split>*{width:100%;max-width:880px}
+  .bh-trade section:has(form) .formcard,.bh-trade section:has(details) details{text-align:left}
+  /* linen bands */
+  .bh-trade section:has(.who),
+  .bh-trade section:has(.steps){background:var(--bht-linen);box-shadow:0 0 0 100vmax var(--bht-linen);clip-path:inset(0 -100vmax);border-top-color:transparent;padding:60px 0}
+  .bh-trade section:has(.steps) + section{border-top-color:transparent}
+  /* ruled cells: Who it's for (4) and How it works (3) */
+  .bh-trade .who,.bh-trade .steps{width:100%;display:grid;gap:0;background:transparent;border:0;border-top:1px solid var(--bht-rule);border-bottom:1px solid var(--bht-rule)}
+  .bh-trade .who{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .bh-trade .steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .bh-trade .who>div,.bh-trade .steps>div{background:transparent;border:0;padding:28px 22px;text-align:center}
+  .bh-trade .who>div+div,.bh-trade .steps>div+div{border-left:1px solid var(--bht-rule)}
+  .bh-trade .who p,.bh-trade .steps p{margin-left:auto;margin-right:auto;max-width:30ch}
+  /* ringed step numbers, in the style of the BH seal */
+  .bh-trade .steps .n{width:52px;height:52px;border-radius:50%;border:1px solid var(--brass-deep);background:var(--bht-canvas);display:grid;place-items:center;font-family:var(--font-heading-family,'Trirong'),Georgia,serif;font-weight:300;font-size:23px;line-height:1;color:var(--brass-deep);margin:0 auto 16px}
   /* room photo */
   .bht-photo{margin:0;max-width:none;position:relative}
   .bht-photo img{display:block;width:100%;height:auto;max-height:600px;object-fit:cover;object-position:50% 55%}
   .bht-photo + section{border-top-color:transparent}
-  /* ringed step numbers, in the style of the BH seal */
-  .bh-trade .steps{position:relative}
-  .bh-trade .steps .n{width:58px;height:58px;border-radius:50%;border:1px solid var(--brass-deep);background:var(--bht-canvas);display:grid;place-items:center;font-family:var(--font-heading-family,'Trirong'),Georgia,serif;font-weight:300;font-size:26px;line-height:1;color:var(--brass-deep);margin:0 0 16px;position:relative;z-index:1}
-  .bh-trade .steps::before{content:"";position:absolute;top:29px;left:29px;right:calc((100% - 56px) / 3 - 29px);height:1px;background:rgba(133,98,55,.45)}
   @media (max-width:820px){
-    .bh-trade .steps::before{display:none}
-    .bh-trade .steps>div{display:grid;grid-template-columns:58px 1fr;column-gap:16px;align-items:center}
-    .bh-trade .steps .n{grid-row:span 2;align-self:start;margin:0}
-    .bh-trade .steps>div h3{align-self:end}
-    .bh-trade .steps>div p:not(.n){grid-column:2}
-    .bh-trade section:has(.who),.bh-trade section:has(.steps){padding:44px 0}
-    .bh-trade .who{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 20px}
+    .bh-trade .split{grid-template-columns:1fr;gap:24px}
+    .bh-trade section:has(.who),.bh-trade section:has(.steps){padding:46px 0}
+    .bh-trade .who{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .bh-trade .who>div:nth-child(3){border-left:0}
+    .bh-trade .who>div:nth-child(n+3){border-top:1px solid var(--bht-rule)}
+    .bh-trade .steps{grid-template-columns:1fr}
+    .bh-trade .steps>div+div{border-left:0;border-top:1px solid var(--bht-rule)}
+    .bh-trade .who>div,.bh-trade .steps>div{padding:24px 14px}
     .bht-photo img{aspect-ratio:4/3}
   }
 </style>
