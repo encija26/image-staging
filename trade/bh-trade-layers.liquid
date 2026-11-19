@@ -10,11 +10,13 @@
   .main-page-title{max-width:1180px;margin-left:auto!important;margin-right:auto!important}
   /* top section: intro sits right under the title */
   .bh-trade .hero{align-items:start}
-  /* split sections (Why, Members): wider heading column, short brass rule under the heading, like About "The idea" */
-  .bh-trade .split{grid-template-columns:minmax(0,2fr) minmax(0,3fr);gap:56px}
+  /* every section: heading centered on top, content full width below (no side column) */
+  .bh-trade .split{grid-template-columns:1fr;gap:30px;text-align:center;justify-items:center}
+  .bh-trade .split>*{width:100%}
+  .bh-trade .why-lede{max-width:48ch;margin-left:auto;margin-right:auto}
   .bh-trade section:has(.grid2) .split>h2::after,
-  .bh-trade section:has(.grid2) .split>div:first-child>h2::after{content:"";display:block;width:44px;height:1px;background:var(--brass);margin-top:22px}
-  .bh-trade .grid2{gap:28px 40px}
+  .bh-trade section:has(.grid2) .split>div:first-child>h2::after{content:"";display:block;width:44px;height:1px;background:var(--brass);margin:22px auto 0}
+  .bh-trade .grid2{max-width:960px;margin:6px auto 0;gap:30px 56px;text-align:left}
   /* centered sections (Who, How, Apply, FAQ), like About "How we choose" */
   .bh-trade section:has(.who) .split,
   .bh-trade section:has(.steps) .split,
@@ -40,7 +42,7 @@
   .bht-photo img{display:block;width:100%;height:auto;max-height:600px;object-fit:cover;object-position:50% 55%}
   .bht-photo + section{border-top-color:transparent}
   @media (max-width:820px){
-    .bh-trade .split{grid-template-columns:1fr;gap:24px}
+    .bh-trade .split{gap:24px}
     .bh-trade section:has(.who),.bh-trade section:has(.steps){padding:46px 0}
     .bh-trade .who{grid-template-columns:repeat(2,minmax(0,1fr))}
     .bh-trade .who>div:nth-child(3){border-left:0}
