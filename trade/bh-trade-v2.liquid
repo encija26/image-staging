@@ -1,0 +1,325 @@
+{%- comment -%} Trade Program redesign test (Nov 19 2026). Same copy and same form as /pages/trade-program, laid out in the About page style. Test page only. {%- endcomment -%}
+<style>
+
+.bh-trade{--ink:#1E1F1B;--chalk:#F4F3EF;--stone:#EAE5DA;--paper:#FBFAF7;--brass:#A07D4A;--brass-deep:#856237;--line:#DDD6C8;--muted:#5E5F58;color:var(--ink);text-align:left;max-width:1180px;margin:0 auto}
+.bh-trade *{box-sizing:border-box}
+.bh-trade h2,.bh-trade h3{margin:0;text-wrap:balance}
+.bh-trade p{margin:0}
+.bh-trade .eyebrow{font-size:12px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--brass-deep)}
+.bh-trade .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end;padding:8px 0 48px}
+.bh-trade .lede{font-size:18px;color:var(--muted);margin-top:16px;max-width:56ch;line-height:1.6}
+.bh-trade .offer{background:var(--ink);color:var(--chalk);padding:32px;display:flex;flex-direction:column;gap:12px}
+.bh-trade .offer .eyebrow{color:#D9BE8C}
+.bh-trade .pct{font-size:80px;line-height:.9;color:#D9BE8C}
+.bh-trade .pct small{font-size:22px;margin-left:6px;color:var(--chalk)}
+.bh-trade .offer p{color:#C9C4B8}
+.bh-trade .btn{display:inline-block;align-self:flex-start;background:var(--brass);color:#fff!important;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:14px 26px;border:0;cursor:pointer}
+.bh-trade .btn:hover{background:var(--brass-deep)}
+.bh-trade section{padding:48px 0;border-top:1px solid var(--line)}
+.bh-trade .split{display:grid;grid-template-columns:280px 1fr;gap:48px}
+.bh-trade .split>*{min-width:0}
+.bh-trade .split h2{font-size:32px;line-height:1.15}
+.bh-trade .why-lede{font-size:24px;line-height:1.45;margin-bottom:24px}
+.bh-trade .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px 36px}
+.bh-trade .grid2 h3,.bh-trade .steps h3{font-size:20px}
+.bh-trade .grid2 p,.bh-trade .steps p{color:var(--muted);font-size:15px;margin-top:6px;line-height:1.6}
+.bh-trade .who{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.bh-trade .who div{background:var(--chalk);padding:18px 20px}
+.bh-trade .who h3{font-size:19px}
+.bh-trade .who p{font-size:14px;color:var(--muted);margin-top:4px}
+.bh-trade .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.bh-trade .steps .n{font-size:40px;color:var(--brass);line-height:1;margin:0}
+.bh-trade .formcard{background:var(--paper);border:1px solid var(--line);padding:30px}
+.bh-trade form{display:grid;grid-template-columns:1fr 1fr;gap:18px 22px;align-items:end}
+.bh-trade form .full{grid-column:1/-1}
+.bh-trade label{display:block;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0}
+.bh-trade label .opt{font-weight:400;text-transform:none;letter-spacing:0}
+.bh-trade input,.bh-trade select,.bh-trade textarea{font:inherit;font-size:15px;color:var(--ink);background:#fff;border:1px solid var(--line);padding:12px 14px;text-transform:none;letter-spacing:0;font-weight:400;width:100%;margin:6px 0 0;display:block}
+.bh-trade textarea{min-height:96px;resize:vertical}
+.bh-trade label.check{display:flex;flex-direction:row;align-items:flex-start;gap:10px;text-transform:none;letter-spacing:0;font-weight:400;font-size:14px}
+.bh-trade label.check input{width:auto;margin-top:3px}
+.bh-trade .thanks{background:var(--stone);padding:18px 20px;font-size:16px;margin-bottom:18px}
+.bh-trade details{border-bottom:1px solid var(--line);padding:14px 0}
+.bh-trade summary{font-size:18px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.bh-trade summary::-webkit-details-marker{display:none}
+.bh-trade summary::after{content:"+";color:var(--brass)}
+.bh-trade details[open] summary::after{content:"\2212"}
+.bh-trade details p{color:var(--muted);font-size:15px;margin-top:10px;max-width:68ch;line-height:1.6}
+@media (max-width:820px){.bh-trade .hero,.bh-trade .split{grid-template-columns:1fr;gap:24px}.bh-trade .steps,.bh-trade .grid2,.bh-trade form{grid-template-columns:1fr}.bh-trade .who{grid-template-columns:1fr}}
+
+.bht{background:#F8F4EC;color:#2B2B2B}
+.bht *{box-sizing:border-box}
+.bht__wrap{max-width:var(--page-width,1440px);margin:0 auto;padding-left:20px;padding-right:20px}
+@media (min-width:750px){.bht__wrap{padding-left:5rem;padding-right:5rem}}
+.bht__eb{margin:0;display:flex;align-items:center;gap:14px;font-size:14px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#856237}
+.bht__eb::before{content:'';width:32px;height:1px;background:currentColor;flex:none}
+.bht__eb--c{justify-content:center}
+.bht__eb--c::after{content:'';width:32px;height:1px;background:currentColor;flex:none}
+@media (min-width:750px){.bht__eb{font-size:16px;letter-spacing:.26em;gap:16px}.bht__eb::before,.bht__eb--c::after{width:40px}}
+.bht__h{margin:0;font-family:var(--font-heading-family);font-weight:300;line-height:1.12;color:#2B2B2B;font-size:clamp(34px,3.6vw,50px);text-wrap:balance}
+.bht__center{display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center}
+.bht__lead{margin:0;max-width:860px;font-family:var(--font-heading-family);font-size:clamp(22px,2.1vw,29px);font-weight:300;line-height:1.45}
+.bht p{margin:0}
+.bht h3{margin:0;font-family:var(--font-heading-family);font-weight:400;font-size:clamp(21px,1.7vw,24px);line-height:1.25}
+.bht__txt{font-size:16px;line-height:1.65;color:#4A4A44;margin-top:10px!important}
+
+/* hero */
+.bht-hero{position:relative;height:min(74vh,720px);min-height:480px;overflow:hidden;background:#33342F}
+.bht-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 58%}
+.bht-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(30,31,27,.74) 0%,rgba(30,31,27,.4) 45%,rgba(30,31,27,.05) 78%)}
+@media (max-width:749px){.bht-hero::after{background:linear-gradient(0deg,rgba(30,31,27,.76) 0%,rgba(30,31,27,.35) 60%,rgba(30,31,27,.1) 100%)}.bht-hero img{object-position:40% 58%}}
+.bht-hero__txt{position:absolute;z-index:1;left:0;right:0;bottom:52px}
+@media (min-width:750px){.bht-hero__txt{bottom:100px}}
+.bht-hero__in{display:flex;flex-direction:column;gap:20px}
+.bht-hero .bht__eb{color:#DCC59A}
+.bht-hero__t{margin:0;font-family:var(--font-heading-family);font-weight:300;font-size:clamp(46px,6vw,80px);line-height:1.04;color:#FAFAF7}
+.bht-hero__rule{width:80px;height:1px;background:#DCC59A}
+
+/* intro + offer */
+.bht-intro{padding:72px 0}
+@media (min-width:750px){.bht-intro{padding:110px 0}}
+.bht-intro__grid{display:grid;grid-template-columns:1fr;gap:40px;align-items:center}
+@media (min-width:990px){.bht-intro__grid{grid-template-columns:7fr 5fr;gap:88px}}
+.bht-intro__lede{margin:0;font-family:var(--font-heading-family);font-weight:300;font-size:clamp(26px,2.5vw,36px);line-height:1.35;color:#2B2B2B}
+.bht-offer{position:relative;background:#33342F;color:#F4F3EF;padding:44px 36px;display:flex;flex-direction:column;gap:14px;border:1px solid rgba(201,164,106,.6)}
+.bht-offer::before{content:'';position:absolute;inset:10px;border:1px solid rgba(201,164,106,.25);pointer-events:none}
+.bht-offer .bht__eb{color:#C9A46A}
+.bht-offer__pct{font-family:var(--font-heading-family);font-weight:300;font-size:clamp(72px,7vw,96px);line-height:.95;color:#DCC59A}
+.bht-offer__pct small{font-size:24px;margin-left:8px;color:#F4F3EF}
+.bht-offer p{color:#CFC9BC;font-size:16px;line-height:1.55}
+.bht-btn{position:relative;display:inline-block;align-self:flex-start;background:#A07D4A;color:#fff!important;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;padding:15px 28px;margin-top:8px}
+.bht-btn:hover{background:#856237}
+
+/* why: centered head + ruled 4 cells */
+.bht-why{padding:0 0 80px}
+@media (min-width:750px){.bht-why{padding-bottom:120px}}
+.bht-why__top{border-top:1px solid #E2DACB;padding-top:80px}
+@media (min-width:750px){.bht-why__top{padding-top:120px}}
+.bht-row{margin-top:48px;display:grid;grid-template-columns:1fr;border-top:1px solid #E2DACB;border-bottom:1px solid #E2DACB}
+@media (min-width:750px){.bht-row{margin-top:64px;grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1100px){.bht-row--4{grid-template-columns:repeat(4,1fr)}}
+.bht-cell{padding:30px 24px}
+.bht-cell+.bht-cell{border-top:1px solid #E2DACB}
+@media (min-width:750px){
+  .bht-cell{padding:40px 30px}
+  .bht-row .bht-cell+.bht-cell{border-top:0}
+  .bht-row .bht-cell:nth-child(even){border-left:1px solid #E2DACB}
+  .bht-row .bht-cell:nth-child(n+3){border-top:1px solid #E2DACB}
+}
+@media (min-width:1100px){
+  .bht-row--4 .bht-cell+.bht-cell{border-left:1px solid #E2DACB}
+  .bht-row--4 .bht-cell:nth-child(n+3){border-top:0}
+}
+.bht-cell__n{display:block;margin:0 0 14px;font-family:var(--font-heading-family);font-size:15px;color:#A07D4A}
+
+/* who: linen band with seal watermark */
+.bht-who{position:relative;overflow:hidden;background:#F1EBE0;border-top:1px solid #E2DACB;border-bottom:1px solid #E2DACB;padding:72px 0}
+@media (min-width:750px){.bht-who{padding:110px 0}}
+.bht-who__mark{position:absolute;right:-120px;top:50%;transform:translateY(-50%);width:560px;height:auto;opacity:.07;pointer-events:none}
+@media (max-width:749px){.bht-who__mark{top:-60px;right:-170px;transform:none;width:380px}}
+.bht-who .bht__wrap{position:relative}
+.bht-who__list{margin-top:48px;display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid #D9CFBD}
+@media (min-width:750px){.bht-who__list{grid-template-columns:repeat(4,1fr);border-bottom:1px solid #D9CFBD}}
+.bht-who__item{padding:28px 20px;text-align:center;border-bottom:1px solid #D9CFBD}
+@media (min-width:750px){.bht-who__item{border-bottom:0;padding:36px 22px}.bht-who__item+.bht-who__item{border-left:1px solid #D9CFBD}}
+.bht-who__item .bht__txt{max-width:28ch;margin-left:auto;margin-right:auto}
+
+/* members: dark band, double-ruled card */
+.bht-mem{background:#33342F;padding:72px 0}
+@media (min-width:750px){.bht-mem{padding:120px 0}}
+.bht-mem__card{position:relative;max-width:1040px;margin:0 auto;padding:52px 26px;border:1px solid rgba(201,164,106,.6)}
+@media (min-width:750px){.bht-mem__card{padding:72px 72px}}
+.bht-mem__card::before{content:'';position:absolute;inset:10px;border:1px solid rgba(201,164,106,.25);pointer-events:none}
+.bht-mem__seal{width:64px;height:64px}
+.bht-mem .bht__eb{color:#C9A46A}
+.bht-mem .bht__h{color:#F4F3EF}
+.bht-mem__grid{position:relative;margin-top:48px;display:grid;grid-template-columns:1fr;gap:34px}
+@media (min-width:750px){.bht-mem__grid{grid-template-columns:1fr 1fr;gap:44px 64px}}
+.bht-mem__grid h3{color:#F4F3EF}
+.bht-mem__grid h3::before{content:'';display:block;width:32px;height:1px;background:#C9A46A;margin-bottom:18px}
+.bht-mem__grid .bht__txt{color:#CFC9BC}
+
+/* steps */
+.bht-how{padding:80px 0}
+@media (min-width:750px){.bht-how{padding:120px 0}}
+.bht-how .bht-cell{text-align:center}
+.bht-ring{width:58px;height:58px;border-radius:50%;border:1px solid #856237;display:grid;place-items:center;margin:0 auto 20px;font-family:var(--font-heading-family);font-weight:300;font-size:25px;line-height:1;color:#856237;box-shadow:0 0 0 5px #F8F4EC,0 0 0 6px rgba(133,98,55,.35)}
+.bht-how .bht__txt{max-width:32ch;margin-left:auto;margin-right:auto}
+@media (min-width:750px){.bht-row--3{grid-template-columns:repeat(3,1fr)}.bht-row--3 .bht-cell:nth-child(n+3){border-top:0}.bht-row--3 .bht-cell+.bht-cell{border-left:1px solid #E2DACB}}
+
+/* apply: linen panel like Our Collections */
+.bht-apply{padding:0 0 80px}
+@media (min-width:750px){.bht-apply{padding-bottom:120px}}
+.bht-apply__panel{background:#F1EBE0;border:1px solid #E2DACB;padding:56px 18px}
+@media (min-width:750px){.bht-apply__panel{padding:72px 56px}}
+.bht-apply__note{margin:0;font-size:16px;color:#4A4A44}
+.bht-apply .bh-trade{max-width:900px;margin:44px auto 0}
+.bht-apply .bh-trade .formcard{background:#F8F4EC;border-color:#E2DACB;padding:34px}
+@media (max-width:749px){.bht-apply .bh-trade .formcard{padding:22px 16px}}
+
+/* faq: photo + questions, like About "Before you ask" */
+.bht-faq{display:grid;grid-template-columns:1fr;background:#F8F4EC;border-top:1px solid #E2DACB}
+@media (min-width:990px){.bht-faq{grid-template-columns:5fr 7fr}}
+.bht-faq__img{position:relative;min-height:340px;background:#E2DACB}
+.bht-faq__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 50%}
+.bht-faq__body{padding:64px 20px 80px}
+@media (min-width:750px){.bht-faq__body{padding:96px 5rem 110px}}
+.bht-faq .bht__h{margin-top:20px}
+.bht-faq .bh-trade{max-width:none;margin:30px 0 0}
+.bht-faq .bh-trade details:first-child{border-top:1px solid var(--line)}
+
+/* closing */
+.bht-close{padding:80px 0 100px;border-top:1px solid #E2DACB}
+.bht-close__seal{width:56px;height:56px}
+</style>
+
+{%- assign seal_s = 'bramley-house-seal-circle-brass_200x.png' | file_url -%}
+{%- assign seal_l = 'bramley-house-seal-circle-brass_1200x.png' | file_url -%}
+<div class="bht">
+  <section class="bht-hero">
+    <img src="{{ 'bh-trade-marbella-2000.jpg' | asset_url }}" srcset="{{ 'bh-trade-marbella-1000.jpg' | asset_url }} 1000w, {{ 'bh-trade-marbella-2000.jpg' | asset_url }} 2000w" sizes="100vw" width="2000" height="1125" loading="eager" alt="A Bramley House living room with the Marbella sofa, two blue barrel chairs and a round brass coffee table">
+    <div class="bht-hero__txt"><div class="bht__wrap"><div class="bht-hero__in">
+      <p class="bht__eb">For design professionals</p>
+      <h1 class="bht-hero__t">{{ page.title | escape }}</h1>
+      <div class="bht-hero__rule"></div>
+    </div></div></div>
+  </section>
+
+  <section class="bht-intro"><div class="bht__wrap"><div class="bht-intro__grid">
+    <p class="bht-intro__lede">For architects, interior designers, home stagers and hospitality owners furnishing rooms for clients and guests. Approved members receive trade pricing on every order and a direct line to us for sourcing help.</p>
+    <div class="bht-offer">
+      <p class="bht__eb">Trade pricing</p>
+      <p class="bht-offer__pct">15%<small>off</small></p>
+      <p>Starting at 15% on every order, rising as your annual volume grows.</p>
+      <a class="bht-btn" href="#apply">Apply for trade</a>
+    </div>
+  </div></div></section>
+
+  <section class="bht-why"><div class="bht__wrap"><div class="bht-why__top">
+    <div class="bht__center">
+      <p class="bht__eb bht__eb--c">Considered · Collected</p>
+      <h2 class="bht__h">Why source with Bramley House</h2>
+      <p class="bht__lead">Bramley House is heritage meets modern living. We bring together pieces with good design, honest materials and a reason behind them, so a room feels collected over time, not bought all at once.</p>
+    </div>
+    <div class="bht-row bht-row--4">
+      <div class="bht-cell"><span class="bht-cell__n">i</span><h3>Every piece has a story</h3><p class="bht__txt">Each one is named and comes with its history: the 1930s curve behind a sofa, the English wingback built against fireside draughts. Stories you can share with clients when you present a room.</p></div>
+      <div class="bht-cell"><span class="bht-cell__n">ii</span><h3>Eras that work together</h3><p class="bht__txt">We choose heritage shapes and modern classics to sit in the same room, so you can layer a look without hunting across a dozen stores.</p></div>
+      <div class="bht-cell"><span class="bht-cell__n">iii</span><h3>Curated, not endless</h3><p class="bht__txt">A short, edited collection instead of thousands of options. Less sifting, more designing.</p></div>
+      <div class="bht-cell"><span class="bht-cell__n">iv</span><h3>Delivered to your client</h3><p class="bht__txt">Order for any address in the contiguous United States and it ships straight to the project. We ship free wherever we can. Some custom and larger pieces travel by freight, and any delivery charge is shown at checkout before you pay.</p></div>
+    </div>
+  </div></div></section>
+
+  <section class="bht-who">
+    <img class="bht-who__mark" src="{{ seal_l }}" alt="" aria-hidden="true" width="620" height="620" loading="lazy">
+    <div class="bht__wrap">
+      <div class="bht__center"><h2 class="bht__h">Who it's for</h2></div>
+      <div class="bht-who__list">
+        <div class="bht-who__item"><h3>Architects</h3><p class="bht__txt">Specifying furniture for residential projects.</p></div>
+        <div class="bht-who__item"><h3>Interior designers</h3><p class="bht__txt">And decorators sourcing for clients.</p></div>
+        <div class="bht-who__item"><h3>Home stagers</h3><p class="bht__txt">Furnishing listings, model homes and show homes.</p></div>
+        <div class="bht-who__item"><h3>Hospitality</h3><p class="bht__txt">Inns, guest houses, short-term rentals and the managers who furnish them.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bht-mem"><div class="bht__wrap"><div class="bht-mem__card">
+    <div class="bht__center" style="position:relative">
+      <img class="bht-mem__seal" src="{{ seal_s }}" alt="" width="64" height="64" loading="lazy">
+      <h2 class="bht__h">What members receive</h2>
+    </div>
+    <div class="bht-mem__grid">
+      <div><h3>Trade pricing that grows with you</h3><p class="bht__txt">Starting at 15% on every order once you're approved, with no minimum. As your annual volume with us grows, so does your trade pricing.</p></div>
+      <div><h3>A direct line to us</h3><p class="bht__txt">Email us about a project and we'll help with dimensions, materials, lead times and availability before you order.</p></div>
+      <div><h3>First look at new pieces</h3><p class="bht__txt">Members hear about new collections before they reach the site.</p></div>
+      <div><h3>Custom discounts for larger projects</h3><p class="bht__txt">Furnishing several units, a full inn or a portfolio of rentals? Tell us the scope and we'll quote a custom discount for the project, beyond your standard trade pricing, so larger orders cost less per piece.</p></div>
+    </div>
+  </div></div></section>
+
+  <section class="bht-how"><div class="bht__wrap">
+    <div class="bht__center"><h2 class="bht__h">How it works</h2></div>
+    <div class="bht-row bht-row--3">
+      <div class="bht-cell"><p class="bht-ring">1</p><h3>Apply</h3><p class="bht__txt">Tell us about your business and share a website or portfolio.</p></div>
+      <div class="bht-cell"><p class="bht-ring">2</p><h3>We review</h3><p class="bht__txt">We review every application personally and reply by email. Approved members receive their own trade code.</p></div>
+      <div class="bht-cell"><p class="bht-ring">3</p><h3>Order</h3><p class="bht__txt">Sign in with the email you applied with and use your code at checkout.</p></div>
+    </div>
+  </div></section>
+
+  <section class="bht-apply" id="apply"><div class="bht__wrap"><div class="bht-apply__panel">
+    <div class="bht__center">
+      <h2 class="bht__h">Apply for trade</h2>
+      <p class="bht-apply__note">Applications are reviewed by our team. All fields are required unless marked optional.</p>
+    </div>
+    <div class="bh-trade">
+<div class="formcard">
+<p class="thanks" id="trade-thanks" style="display:none">Thank you. Your application is in, and we'll be in touch by email soon.</p>
+<form method="post" action="/contact#apply" id="trade-apply" accept-charset="UTF-8">
+<input type="hidden" name="form_type" value="contact">
+<input type="hidden" name="utf8" value="✓">
+<input type="hidden" name="contact[Form]" value="Trade application">
+<label>Full name<input name="contact[Name]" required autocomplete="name"></label>
+<label>Business name<input name="contact[Business name]" required autocomplete="organization"></label>
+<label>Profession<select name="contact[Profession]" required><option value="">Choose one</option>
+<option>Architect</option>
+<option>Interior designer</option>
+<option>Decorator</option>
+<option>Home stager</option>
+<option>Inn, guest house, rental or property manager</option>
+<option>Builder or developer (model homes)</option>
+<option>Other design professional</option></select></label>
+<label>City and state<input name="contact[City and state]" required autocomplete="address-level2"></label>
+<label>Email<input type="email" name="contact[email]" required autocomplete="email"></label>
+<label>Phone <span class="opt">(optional)</span><input type="tel" name="contact[Phone]" autocomplete="tel"></label>
+<label>Business website or portfolio<input name="contact[Website or portfolio]" required placeholder="https://"></label>
+<label>Business email <span class="opt">(if different)</span><input type="email" name="contact[Business email]"></label>
+<label>Instagram <span class="opt">(optional)</span><input name="contact[Instagram]" placeholder="@"></label>
+<label>Facebook, Houzz or LinkedIn <span class="opt">(optional)</span><input name="contact[Facebook, Houzz or LinkedIn]" placeholder="https://"></label>
+<label>Professional association <span class="opt">(optional)</span><input name="contact[Professional association]" placeholder="e.g. ASID, IIDA, AIA, RESA"></label>
+<label>Architect license or rental listing <span class="opt">(optional)</span><input name="contact[License or rental listing]" placeholder="License no. and state, or Airbnb / VRBO link"></label>
+<label class="full">Tell us about a current project <span class="opt">(optional)</span><textarea name="contact[body]"></textarea></label>
+<label class="check full"><input type="checkbox" name="contact[Agrees to trade terms]" value="Yes" required> I'm applying on behalf of a design or hospitality business and agree to the trade terms below and to receive emails from Bramley House about my application and the trade program.</label>
+<div class="full"><button class="btn" type="submit">Submit application</button></div>
+</form>
+</div>
+    </div>
+  </div></div></section>
+
+  <section class="bht-faq">
+    <div class="bht-faq__img"><img src="{{ 'bh-trade-desk-1600.jpg' | asset_url }}" srcset="{{ 'bh-trade-desk-800.jpg' | asset_url }} 800w, {{ 'bh-trade-desk-1600.jpg' | asset_url }} 1600w" sizes="(min-width: 990px) 42vw, 100vw" width="1600" height="1381" loading="lazy" alt="A Bramley House study with a turned-leg writing desk and a navy wingback armchair beside a bookcase"></div>
+    <div class="bht-faq__body">
+      <p class="bht__eb">Questions</p>
+      <h2 class="bht__h">Trade terms &amp; FAQs</h2>
+      <div class="bh-trade">
+
+<details><summary>What are the trade terms?</summary><ol style="margin:12px 0 0;padding-left:20px;color:var(--muted);font-size:15px;line-height:1.55">
+<li>Trade pricing is for approved members buying on behalf of clients or a business.</li>
+<li>Each trade code belongs to the approved member and may not be shared, posted or resold.</li>
+<li>Trade pricing applies to orders placed after approval and cannot be added to past orders.</li>
+<li>Trade pricing cannot be combined with other discount codes or promotions.</li>
+<li>All trade orders follow the Bramley House Shipping &amp; Returns policy.</li>
+<li>We may update trade pricing, benefits or these terms. We will email members before a change takes effect, and orders already placed keep the terms they were placed under.</li>
+<li>We may decline an application, or end a membership if a code is shared or misused.</li>
+</ol></details>
+<details><summary>Does my trade pricing increase over time?</summary><p>Yes. Trade pricing starts at 15% and increases as your annual volume with us grows. We review member volume and let you know when your pricing changes.</p></details>
+<details><summary>Do you offer pricing for large or multi-unit projects?</summary><p>Yes. For property managers, hospitality groups and other multi-unit projects, we offer custom project discounts beyond standard trade pricing, considered case by case. Email us at <a href="mailto:support@bramleyhousehome.com">support@bramleyhousehome.com</a> with the scope and timing, and we'll put a proposal together.</p></details>
+<details><summary>Can I combine trade pricing with other offers?</summary><p>Trade pricing can't be combined with other discount codes or promotions. It replaces them on every order.</p></details>
+<details><summary>Can I order for a client's address?</summary><p>Yes. Enter your client's address at checkout and the order ships straight to them anywhere in the contiguous United States. We ship free wherever we can. Some custom and larger pieces travel by freight, and any delivery charge is shown at checkout before you pay.</p></details>
+<details><summary>Can the program change?</summary><p>From time to time we may update trade pricing, benefits or terms. We'll email members before any change takes effect. Orders already placed keep the terms they were placed under.</p></details>
+<details><summary>What about returns and damage?</summary><p>Trade orders follow the same Shipping &amp; Returns policy as every Bramley House order.</p></details>
+<details><summary>Can my colleagues use my code?</summary><p>Each code is tied to the approved member's account. Colleagues at your firm are welcome to apply under the same business.</p></details>
+<details><summary>Who can apply?</summary><p>Architects, interior designers, decorators, home stagers, and inns, guest houses and rentals, buying on behalf of clients or a business.</p></details>
+<details><summary>What if I'm not sure I qualify, or I don't see what I do here?</summary><p>Email us at <a href="mailto:support@bramleyhousehome.com">support@bramleyhousehome.com</a> and tell us a little about your work. If you furnish rooms for clients, guests or a business, we'd like to hear from you, and we'll let you know how we can work together.</p></details>
+
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+(function(){if(location.search.indexOf('contact_posted=true')>-1){var t=document.getElementById('trade-thanks'),f=document.getElementById('trade-apply');if(t){t.style.display='block'}if(f){f.style.display='none'}var a=document.getElementById('apply');if(a){a.scrollIntoView()}if(history.replaceState){history.replaceState(null,'',location.pathname+'#apply')}}})();
+</script>
+<script>
+(function(){var f=document.getElementById('trade-apply');if(!f)return;f.addEventListener('submit',function(){try{var g=function(n){var e=f.querySelector('[name="contact['+n+']"]');return e?e.value.trim():''};var nm=g('Name').split(' ');var body={data:{type:'subscription',attributes:{custom_source:'Trade application',profile:{data:{type:'profile',attributes:{email:g('email'),first_name:nm.shift()||'',last_name:nm.join(' '),properties:{'Trade business name':g('Business name'),'Trade profession':g('Profession'),'Trade location':g('City and state'),'Trade website':g('Website or portfolio'),'Trade Instagram':g('Instagram')}}}}},relationships:{list:{data:{type:'list',id:'Wj6W75'}}}}};fetch('https://a.klaviyo.com/client/subscriptions?company_id=SJkVfD',{method:'POST',keepalive:true,headers:{'Content-Type':'application/vnd.api+json',revision:'2024-10-15'},body:JSON.stringify(body)})}catch(e){}});})();
+</script>
+
+{% schema %}
+{ "name": "BH Trade v2 test", "settings": [] }
+{% endschema %}
