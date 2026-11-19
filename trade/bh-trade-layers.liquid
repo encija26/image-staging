@@ -9,6 +9,12 @@
   .bh-trade section:has(.who),
   .bh-trade section:has(.steps){background:var(--bht-linen);box-shadow:0 0 0 100vmax var(--bht-linen);clip-path:inset(0 -100vmax);border-top-color:transparent;padding:56px 0}
   .bh-trade section:has(.steps) + section{border-top-color:transparent}
+  /* stacked sections: heading on top, content uses the full width (no left label column) */
+  .bh-trade .split{grid-template-columns:1fr;gap:26px}
+  .bh-trade .split>h2,.bh-trade .split>div:first-child>h2{font-size:36px}
+  .bh-trade .why-lede{max-width:46ch}
+  .bh-trade .grid2{gap:30px 56px}
+  .bh-trade .formcard{max-width:none}
   /* top section: intro sits right under the title */
   .bh-trade .hero{align-items:start}
   /* Who it's for: one scannable row, no boxes */
