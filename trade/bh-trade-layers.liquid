@@ -9,8 +9,11 @@
   .bh-trade section:has(.who),
   .bh-trade section:has(.steps){background:var(--bht-linen);box-shadow:0 0 0 100vmax var(--bht-linen);clip-path:inset(0 -100vmax);border-top-color:transparent;padding:56px 0}
   .bh-trade section:has(.steps) + section{border-top-color:transparent}
-  .bh-trade .who{background:transparent;border:0;gap:14px}
-  .bh-trade .who div{background:var(--bht-canvas);border:1px solid var(--line)}
+  /* top section: intro sits right under the title */
+  .bh-trade .hero{align-items:start}
+  /* Who it's for: one scannable row, no boxes */
+  .bh-trade .who{grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;background:transparent;border:0}
+  .bh-trade .who div{background:transparent;border:0;border-top:1px solid var(--brass-deep);padding:18px 0 0}
   /* room photo */
   .bht-photo{margin:0;max-width:none;position:relative}
   .bht-photo img{display:block;width:100%;height:auto;max-height:600px;object-fit:cover;object-position:50% 55%}
@@ -26,6 +29,7 @@
     .bh-trade .steps>div h3{align-self:end}
     .bh-trade .steps>div p:not(.n){grid-column:2}
     .bh-trade section:has(.who),.bh-trade section:has(.steps){padding:44px 0}
+    .bh-trade .who{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 20px}
     .bht-photo img{aspect-ratio:4/3}
   }
 </style>
