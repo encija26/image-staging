@@ -12,7 +12,7 @@
   .bh-trade .who{background:transparent;border:0;gap:14px}
   .bh-trade .who div{background:var(--bht-canvas);border:1px solid var(--line)}
   /* room photo */
-  .bht-photo{margin:0 calc(50% - 50vw);width:100vw;max-width:none}
+  .bht-photo{margin:0;max-width:none;position:relative}
   .bht-photo img{display:block;width:100%;height:auto;max-height:600px;object-fit:cover;object-position:50% 55%}
   .bht-photo + section{border-top-color:transparent}
   /* ringed step numbers, in the style of the BH seal */
@@ -39,6 +39,8 @@
       f.className = 'bht-photo';
       f.innerHTML = '<img src="{{ 'bh-trade-marbella-2000.jpg' | asset_url }}" srcset="{{ 'bh-trade-marbella-1000.jpg' | asset_url }} 1000w, {{ 'bh-trade-marbella-2000.jpg' | asset_url }} 2000w" sizes="100vw" width="2000" height="1125" loading="lazy" alt="A Bramley House living room with the Marbella sofa, two blue barrel chairs and a round brass coffee table">';
       sec.parentNode.insertBefore(f, sec.nextSibling);
+      function fit() { f.style.left = '0px'; var r = f.getBoundingClientRect(); f.style.left = (-r.left) + 'px'; f.style.width = document.documentElement.clientWidth + 'px'; }
+      fit(); window.addEventListener('resize', fit);
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
   })();
